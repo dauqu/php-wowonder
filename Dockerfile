@@ -1,53 +1,14 @@
-FROM alpine:latest
+FROM ubuntu:20.04
 
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get upgrade -y
 
-#Update and upgrade
-RUN apk update && apk upgrade
+RUN apt-get install -y apache2
 
-# Setup apache and php
-RUN apk --no-cache --update \
-    add apache2 \
-    apache2-ssl \
-    curl \
-    php81-apache2 \
-    php81-bcmath \
-    php81-bz2 \
-    php81-calendar \
-    php81-common \
-    php81-ctype \
-    php81-curl \
-    php81-dom \
-    php81-gd \
-    php81-iconv \
-    php81-mbstring \
-    php81-mysqli \
-    php81-mysqlnd \
-    php81-openssl \
-    php81-pdo_mysql \
-    php81-pdo_pgsql \
-    php81-pdo_sqlite \
-    php81-phar \
-    php81-zip \
-    php81-zlib \
-    php81-fileinfo \
-    php81-session \
-    php81-xml
+RUN sudo apt update
+RUN apt install php libapache2-mod-php
 
-#Add servername
-RUN echo "ServerName 127.0.0.1" >> /etc/apache2/httpd.conf
+COPY . /var/www/html
 
-#Remove all from htdocs
-RUN rm -rf /var/www/localhost/htdocs/*
-
-#Copy files
-COPY . /var/www/localhost/htdocs/
-
-#Set permissions
-RUN chown -R apache:apache /var/www/localhost/htdocs/
-
-#Expose port 80
 EXPOSE 80
 
-#Start apache
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]
