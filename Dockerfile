@@ -1,8 +1,10 @@
 FROM ubuntu:20.04
 
-RUN apt-get update && apt-get upgrade -y
+# Set the timezone to UTC
+ENV TZ=UTC
 
-RUN apt-get install -y apache2
+RUN apt-get update && \
+    apt-get install -y apache2
 
 RUN sudo apt update
 RUN apt install php libapache2-mod-php
